@@ -13,5 +13,5 @@ services:
     volumes:
       - ./app:/app/
       - ${CHFAKT2_PATH}:/chfakt2/
-    command: ["pyton", "/app/api/main.py"]
+    command: ["python", "/app/api/main.py"]
     restart: unless-stopped
