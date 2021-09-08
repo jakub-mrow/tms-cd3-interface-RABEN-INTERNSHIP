@@ -1,0 +1,19 @@
+{
+    "array": [
+        {
+            "path": "/chfakt2/",
+            "files": [
+                {
+                    "regex": "*",
+                    "extension": "jpg"
+                },
+                {
+                    "regex": "*",
+                    "extension": "pdf"
+                }
+            ],
+            "dest": "",
+            "delete": true
+        }
+    ]
+}

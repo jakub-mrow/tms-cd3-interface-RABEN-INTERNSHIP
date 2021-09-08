@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  interface:
+    build:
+      context: ./docker
+      dockerfile: interface.dockerfile
+    env_file:
+      - .env
+    container_name: ${APP_CONTAINER_NAME}-${APP_ENV}
+    hostname: ${APP_CONTAINER_NAME}-${APP_ENV}
+    ports:
+      - "${APP_PORT}:80"
+    volumes:
+      - ./app:/app/
+      - ${CHFAKT2_PATH}:/chfakt2/
+    command: ["pyton", "/app/api/main.py"]
+    restart: unless-stopped
