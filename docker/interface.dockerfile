@@ -7,7 +7,5 @@ COPY docker/requirements.txt /requirements.txt
 
 RUN pip install -r /requirements.txt
 
-COPY ./app /app
-
 LABEL maintainer bzwi2
 LABEL Project=tms-cd3-interface
