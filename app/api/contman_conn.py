@@ -204,12 +204,13 @@ def login(dataObj):
                         dataObj.setCookies(responseHeaders["Set-Cookie"])
                         dataObj.setToken(token)
                         
-                        return dataObj
+                        return dataObj, None
                 else:
                         log(res.text)
+                        return {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
-                raise SystemExit(error)
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Starting transaction
@@ -239,13 +240,13 @@ def startTransaction(dataObj):
                         # pretty print body of response and headers
                         # print(parseJson(resText), parseHeaders(responseHeaders), sep="\n------------------\n")
                         # <----------------------------------------------->
-                        return dataObj
+                        return dataObj, None
                 else:
                         log(res.text)
-
+                        return {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
-                raise SystemExit(error)
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Creating document
@@ -276,12 +277,13 @@ def createDocument(dataObj):
                         # to upload file in next request
                         # <----------------------------------------------->
                         dataObj.documentID = res.json()["id"]
-                        return dataObj
+                        return dataObj, None
                 else:
                         log(res.text)
+                        return {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
-                raise SystemExit(error)
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Uploading file to the document
@@ -321,21 +323,26 @@ def uploadFile(dataObj):
         body = "\r\n".join(input)
 
 
-        res = requests.post(URL, data=body, headers=headers)
-        code = int(res.status_code)
-        log("Status code: {}".format(code))
+        try:
+                res = requests.post(URL, data=body, headers=headers)
+                code = int(res.status_code)
+                log("Status code: {}".format(code))
 
-        if code == 201:
-                log("File uploaded!")
-                resText = res.text
-                responseHeaders = res.headers
-                # <----------------------------------------------->
-                # pretty print of response and headers
-                # print(parseJson(resText), parseHeaders(responseHeaders), sep="\n------------------\n")
-                # <----------------------------------------------->
-                return dataObj
-        else:
-                log(res.text)
+                if code == 201:
+                        log("File uploaded!")
+                        resText = res.text
+                        responseHeaders = res.headers
+                        # <----------------------------------------------->
+                        # pretty print of response and headers
+                        # print(parseJson(resText), parseHeaders(responseHeaders), sep="\n------------------\n")
+                        # <----------------------------------------------->
+                        return dataObj, None
+                else:
+                        log(res.text)
+                        return {"request-error": [code, res.text]}
+
+        except requests.exceptions.RequestException as error:
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Commiting/finishing the transaction
@@ -349,17 +356,21 @@ def commitTransaction(dataObj):
                 "Content-type": "application/json",
                 "Authorization": dataObj.token
         }
-        res = requests.post(URL, headers=headers)
-        code = int(res.status_code)
+        try:
+                res = requests.post(URL, headers=headers)
+                code = int(res.status_code)
 
-        log("Status code: {}".format(code))
+                log("Status code: {}".format(code))
 
-        if code == 200:
-                log("Done!")
-        else:
-                print(res.text)
+                if code == 200:
+                        log("Done!")
+                else:
+                        log(res.text)
+                        return {"request-error": [code, res.text]}
+        except requests.exceptions.RequestException as error:
+                return dataObj, {"request-error": error}
 
-        return dataObj
+        return dataObj, None
 
 # <----------------------------------------------->
 # Logging out
@@ -378,9 +389,13 @@ def logout(dataObj):
 
         log("Status code: {}".format(code))
 
-        if code == 200:
-                log("Done!")
-        else:
-                log(res.text)
+        try:
+                if code == 200:
+                        log("Done!")
+                else:
+                        log(res.text)
+                        return {"request-error": [code, res.text]}
+        except requests.exceptions.RequestException as error:
+                return dataObj, {"request-error": error}
 
-        return dataObj
+        return dataObj, None

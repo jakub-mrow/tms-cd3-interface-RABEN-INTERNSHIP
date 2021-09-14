@@ -1,4 +1,3 @@
-from app.api.contman_conn import getClassDocumentID
 from flask import Flask
 from flask import jsonify, request
 from data import Data
@@ -21,24 +20,42 @@ def sendFile():
         # gets request data from the user
         data = request.get_json()
         
-        dataObj = cont.login(dataObj)
+        dataObj, loginError = cont.login(dataObj)
+        if loginError is not None:
+            return loginError
 
         # <----------------------------------------------->
         #  error handle: check if document class exists,
-        # if not return error
+        #  if not return error
         # <----------------------------------------------->
         checkDocumentClass = cont.getDocumentClassID(data["documentClass"],dataObj)
         if type(checkDocumentClass) is dict:
             return checkDocumentClass
 
-        dataObj = cont.startTransaction(dataObj)
+        dataObj, startError = cont.startTransaction(dataObj)
+        if startError is not None:
+            return startError
+
         dataObj, check = cont.convertFormat(data, dataObj)
         if check == False:
             return {"error": "Invalid structure of the format. One of the indexes does not exist in this document class!"}
-        dataObj = cont.createDocument(dataObj)
-        dataObj = cont.uploadFile(dataObj)
-        dataObj = cont.commitTransaction(dataObj)
-        dataObj = cont.logout(dataObj)
+        
+        dataObj, createError = cont.createDocument(dataObj)
+        if createError is not None:
+            return createError
+
+        dataObj, uploadError = cont.uploadFile(dataObj)
+        if uploadError is not None:
+            return uploadError
+
+        dataObj, commitError = cont.commitTransaction(dataObj)
+        if commitError is not None:
+            return commitError
+
+        dataObj, logoutError = cont.logout(dataObj)
+        if logoutError is not None:
+            return logoutError
+
         return {"response": "File added succefully!"}, 201
         
     return {"error": "Request must be JSON"}
