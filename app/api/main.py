@@ -1,3 +1,4 @@
+from app.api.contman_conn import getClassDocumentID
 from flask import Flask
 from flask import jsonify, request
 from data import Data
@@ -17,11 +18,21 @@ def sendFile():
         # for requests like cookies or token
         # <----------------------------------------------->
         dataObj = Data()
+        # gets request data from the user
         data = request.get_json()
         
         dataObj = cont.login(dataObj)
+
+        # <----------------------------------------------->
+        #  error handle: check if document class exists,
+        # if not return error
+        # <----------------------------------------------->
+        checkDocumentClass = cont.getDocumentClassID(data["documentClass"],dataObj)
+        if type(checkDocumentClass) is dict:
+            return checkDocumentClass
+
         dataObj = cont.startTransaction(dataObj)
-        dataObj, check = cont.convertPendingToSending(data, dataObj)
+        dataObj, check = cont.convertFormat(data, dataObj)
         if check == False:
             return {"error": "Invalid structure of the format. One of the indexes does not exist in this document class!"}
         dataObj = cont.createDocument(dataObj)

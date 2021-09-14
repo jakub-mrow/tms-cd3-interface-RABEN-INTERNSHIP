@@ -13,8 +13,9 @@ import sys
 # If there is an error in a response,
 # body of the reponse will always be printed
 # <----------------------------------------------->
+global debug
 debug = True
-def log(message, debug):
+def log(message):
         if debug == True:
                 print(message)
 
@@ -48,10 +49,11 @@ def parseHeaders(headers):
 
 # <----------------------------------------------->
 # Sending a request to postman api to search for
-# document class ID based on class name
+# document class ID based on class name, if it doesnt
+# exist, function returns error
 # <----------------------------------------------->
-def getClassDocumentID(className, dataObj):
-        print("Getting classDocumentID")
+def getDocumentClassID(className, dataObj):
+        log("Getting classDocumentID")
         className.replace(" ", "%20")
         URL = "http://cd3tstapp.raben-group.com/api/global/classes/{}".format(className)
         headers = {
@@ -61,20 +63,25 @@ def getClassDocumentID(className, dataObj):
                 "Authorization": dataObj.token
         }
 
-        res = requests.get(URL, headers=headers)
-        code = int(res.status_code)
-        print("Status code: {}".format(code))
+        try:
+                res = requests.get(URL, headers=headers)
+                code = int(res.status_code)
+                log("Status code: {}".format(code))
 
-        if code == 200:
-                categoryName = res.json()["id"]
-                return categoryName
+                if code == 200:
+                        categoryName = res.json()["id"]
+                        return categoryName
+                else:
+                        return {"error": "This document class does not exist. Check the request body!"}
+        except requests.exceptions.RequestException as error:
+                return {"request-error": error}
 
 # <----------------------------------------------->
 # Sending a request to postman api to search for
 # categoryID based on category name
 # <----------------------------------------------->
 def getCategoryID(categoryName, dataObj):
-        print("Getting categoryDocumentID")
+        log("Getting categoryDocumentID")
         categoryName.replace(" ", "%20")
         URL = "http://cd3tstapp.raben-group.com/api/global/categories/{}".format(categoryName)
         headers = {
@@ -85,7 +92,7 @@ def getCategoryID(categoryName, dataObj):
         }
         res = requests.get(URL, headers=headers)
         code = int(res.status_code)
-        print("Status code: {}".format(code))
+        log("Status code: {}".format(code))
 
         if code == 200:
                 categoryID = res.json()["id"]
@@ -96,7 +103,7 @@ def getCategoryID(categoryName, dataObj):
 # category indexes based on category name
 # <----------------------------------------------->
 def getCategoryIndexes(categoryName, dataObj):
-        print("Getting categoryIndexes")
+        log("Getting categoryIndexes")
         categoryName.replace(" ", "%20")
         URL = "http://cd3tstapp.raben-group.com/api/global/categories/{}?call=getIndexesInfo&fetchValues=false&lang=pl".format(categoryName)
         
@@ -108,7 +115,7 @@ def getCategoryIndexes(categoryName, dataObj):
         }
         res = requests.get(URL, headers=headers)
         code = int(res.status_code)
-        print("Status code: {}".format(code))
+        log("Status code: {}".format(code))
 
         if code == 200:
                 for item in res.json():
@@ -129,7 +136,7 @@ def getCategoryIndexes(categoryName, dataObj):
 # format required by Contman
 # returns True if passed data is valid, False otherwise
 # <----------------------------------------------->
-def convertPendingToSending(json_data, dataObj):
+def convertFormat(json_data, dataObj):
         data = json_data
         categoryName = data["categoryName"]
         pendingCategoryIndexes = data["categoryIndexes"]
@@ -157,7 +164,7 @@ def convertPendingToSending(json_data, dataObj):
         
         dataObj.outputFormat["categoryValues"][0].append(outputIndexes)
 
-        print("OUTPUT")
+        log("OUTPUT")
         pprint.pprint(dataObj.outputFormat)
 
         return dataObj, True
@@ -167,9 +174,9 @@ def convertPendingToSending(json_data, dataObj):
 def login(dataObj):
         URL = "http://cd3tstapp.raben-group.com/api/login"
         body = {
-                "domain":"-",
-                "login":"-",
-                "password":"-"
+                "domain":"System",
+                "login":"apitms",
+                "password":"3LGt76MNbrNmXaR"
         }
 
         headers = {
@@ -178,10 +185,10 @@ def login(dataObj):
         }
 
         try:
-                log("1. Login", debug)
+                log("1. Login")
                 res = requests.post(URL, json = body, headers=headers)
                 code = int(res.status_code)
-                log("Status code: {}".format(code), debug)
+                log("Status code: {}".format(code))
 
                 if code == 200:
                         resText = res.text
@@ -199,7 +206,7 @@ def login(dataObj):
                         
                         return dataObj
                 else:
-                        print(res.text)
+                        log(res.text)
 
         except requests.exceptions.RequestException as error:
                 raise SystemExit(error)
@@ -218,12 +225,12 @@ def startTransaction(dataObj):
         }
 
         try:
-                log("2. Start transaction", debug)
+                log("2. Start transaction")
 
                 res = requests.post(URL, headers=headers)
                 code = int(res.status_code)
 
-                log("Status code: {}".format(code), debug)
+                log("Status code: {}".format(code))
 
                 if code == 200:
                         resText = res.text
@@ -234,7 +241,7 @@ def startTransaction(dataObj):
                         # <----------------------------------------------->
                         return dataObj
                 else:
-                        print(res.text)
+                        log(res.text)
 
 
         except requests.exceptions.RequestException as error:
@@ -244,7 +251,7 @@ def startTransaction(dataObj):
 # Creating document
 # <----------------------------------------------->
 def createDocument(dataObj):
-        log("3. Create Document", debug)
+        log("3. Create Document")
         documentClass = dataObj.documentClass
         URL = "http://cd3tstapp.raben-group.com/api/global/classes/{}?call=create".format(documentClass)
         headers = {
@@ -261,7 +268,7 @@ def createDocument(dataObj):
                 code = int(res.status_code)
 
                 if code == 200:
-                        log("Done!", debug)
+                        log("Done!")
                         resText = res.text
                         responseHeaders = res.headers
                         # <----------------------------------------------->
@@ -271,7 +278,7 @@ def createDocument(dataObj):
                         dataObj.documentID = res.json()["id"]
                         return dataObj
                 else:
-                        print(res.text)
+                        log(res.text)
 
         except requests.exceptions.RequestException as error:
                 raise SystemExit(error)
@@ -280,7 +287,7 @@ def createDocument(dataObj):
 # Uploading file to the document
 # <----------------------------------------------->
 def uploadFile(dataObj):
-        log("4. Upload file", debug)
+        log("4. Upload file")
         URL = "http://cd3tstapp.raben-group.com/api/services/documents/{}/files".format(dataObj.documentID)
         boundary = "testtest"
         headers = {
@@ -316,10 +323,10 @@ def uploadFile(dataObj):
 
         res = requests.post(URL, data=body, headers=headers)
         code = int(res.status_code)
-        log("Status code: {}".format(code), debug)
+        log("Status code: {}".format(code))
 
         if code == 201:
-                log("File uploaded!", debug)
+                log("File uploaded!")
                 resText = res.text
                 responseHeaders = res.headers
                 # <----------------------------------------------->
@@ -328,13 +335,13 @@ def uploadFile(dataObj):
                 # <----------------------------------------------->
                 return dataObj
         else:
-                print(res.text)
+                log(res.text)
 
 # <----------------------------------------------->
 # Commiting/finishing the transaction
 # <----------------------------------------------->
 def commitTransaction(dataObj):
-        log("5. Commit Transaction", debug)
+        log("5. Commit Transaction")
         URL = "http://cd3tstapp.raben-group.com/api/avatar?call=finishTransaction&commit=true"
         headers = {
                 "Cookie": dataObj.cookies,
@@ -345,10 +352,10 @@ def commitTransaction(dataObj):
         res = requests.post(URL, headers=headers)
         code = int(res.status_code)
 
-        log("Status code: {}".format(code), debug)
+        log("Status code: {}".format(code))
 
         if code == 200:
-                log("Done!", debug)
+                log("Done!")
         else:
                 print(res.text)
 
@@ -358,7 +365,7 @@ def commitTransaction(dataObj):
 # Logging out
 # <----------------------------------------------->
 def logout(dataObj):
-        log("6. Logout", debug)
+        log("6. Logout")
         URL = "http://cd3tstapp.raben-group.com/api/avatar?call=logout"
         headers = {
                 "Cookie": dataObj.cookies,
@@ -369,11 +376,11 @@ def logout(dataObj):
         res = requests.post(URL, headers=headers)
         code = int(res.status_code)
 
-        log("Status code: {}".format(code), debug)
+        log("Status code: {}".format(code))
 
         if code == 200:
-                log("Done!", debug)
+                log("Done!")
         else:
-                print(res.text)
+                log(res.text)
 
         return dataObj

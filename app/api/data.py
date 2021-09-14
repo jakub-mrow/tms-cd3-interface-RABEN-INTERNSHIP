@@ -4,6 +4,8 @@
 # <----------------------------------------------->
 class Data:
     def __init__(self):
+        self.fileName = ""
+        self.filePath = ""
         self.cookies = ""
         self.token = ""
         self.indexes = {}
