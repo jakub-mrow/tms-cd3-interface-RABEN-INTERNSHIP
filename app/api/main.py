@@ -2,6 +2,7 @@ from flask import Flask
 from flask import jsonify, request
 from data import Data
 import contman_conn as cont
+import time
 
 app = Flask(__name__)
 
@@ -19,6 +20,9 @@ def sendFile():
         dataObj = Data()
         # gets request data from the user
         data = request.get_json()
+
+        #time the request
+        start = time.clock()
         
         dataObj, loginError = cont.login(dataObj)
         if loginError is not None:
@@ -56,7 +60,8 @@ def sendFile():
         if logoutError is not None:
             return logoutError
 
-        return {"response": "File added succefully!"}, 201
+        requestTime = time.clock() - start
+        return {"response": "File added succefully!", "time": requestTime}, 201
         
     return {"error": "Request must be JSON"}
 

@@ -175,8 +175,8 @@ def login(dataObj):
         URL = "http://cd3tstapp.raben-group.com/api/login"
         body = {
                 "domain":"System",
-                "login":"apitms",
-                "password":"3LGt76MNbrNmXaR"
+                "login":"",
+                "password":""
         }
 
         headers = {
