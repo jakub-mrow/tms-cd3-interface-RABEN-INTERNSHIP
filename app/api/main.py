@@ -22,7 +22,7 @@ def sendFile():
         data = request.get_json()
 
         #time the request
-        start = time.clock()
+        start = time.time()
         
         dataObj, loginError = cont.login(dataObj)
         if loginError is not None:
@@ -60,7 +60,7 @@ def sendFile():
         if logoutError is not None:
             return logoutError
 
-        requestTime = time.clock() - start
+        requestTime = round(float(time.time() - start), 4)
         return {"response": "File added succefully!", "time": requestTime}, 201
         
     return {"error": "Request must be JSON"}
