@@ -340,7 +340,7 @@ def uploadFile(dataObj):
         # passing binary pdf data to send
         # <----------------------------------------------->
         input = ["--{}".format(boundary), 
-                "Content-Disposition: form-data; name=\"plik5.pdf\"; filename=\"plik5.pdf\"",
+                "Content-Disposition: form-data; name=\"{}\"; filename=\"{}\"".format("plik20.pdf", "plik20.pdf"),
                 "Content-Type: application/pdf",
                 str(dataFile.decode("latin-1")),
                 "--{}--\r\n".format(boundary)]
