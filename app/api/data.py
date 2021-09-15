@@ -5,6 +5,8 @@
 class Data:
     def __init__(self):
         self.fileName = ""
+        self.fileExtension = ""
+        self.mimetype = ""
         self.filePath = ""
         self.cookies = ""
         self.token = ""

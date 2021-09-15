@@ -4,6 +4,13 @@ from data import Data
 import pprint
 import os
 import sys
+import uuid
+
+global debug
+global urlValue
+global passValue
+global loginValue
+global domainValue
 
 # <----------------------------------------------->
 # DEBUG MODE
@@ -13,11 +20,20 @@ import sys
 # If there is an error in a response,
 # body of the reponse will always be printed
 # <----------------------------------------------->
-global debug
 debug = True
 def log(message):
         if debug == True:
                 print(message)
+
+
+urlKey = "CD3URL"
+urlValue = os.getenv(urlKey)
+loginKey = "CD3LOGIN"
+loginValue = os.getenv(loginKey)
+passKey = "CD3PASSWORD"
+passValue = os.getenv(passKey)
+domainKey = "CD3DOMAIN"
+domainValue = os.getenv(domainKey)
 
 # <----------------------------------------------------------->
 # Terminology:
@@ -55,7 +71,7 @@ def parseHeaders(headers):
 def getDocumentClassID(className, dataObj):
         log("Getting classDocumentID")
         className.replace(" ", "%20")
-        URL = "http://cd3tstapp.raben-group.com/api/global/classes/{}".format(className)
+        URL = urlValue+"global/classes/{}".format(className)
         headers = {
                 "Cookie": dataObj.cookies,
                 "Accept": "application/json",
@@ -83,7 +99,7 @@ def getDocumentClassID(className, dataObj):
 def getCategoryID(categoryName, dataObj):
         log("Getting categoryDocumentID")
         categoryName.replace(" ", "%20")
-        URL = "http://cd3tstapp.raben-group.com/api/global/categories/{}".format(categoryName)
+        URL = urlValue+"global/categories/{}".format(categoryName)
         headers = {
                 "Cookie": dataObj.cookies,
                 "Accept": "application/json",
@@ -105,7 +121,7 @@ def getCategoryID(categoryName, dataObj):
 def getCategoryIndexes(categoryName, dataObj):
         log("Getting categoryIndexes")
         categoryName.replace(" ", "%20")
-        URL = "http://cd3tstapp.raben-group.com/api/global/categories/{}?call=getIndexesInfo&fetchValues=false&lang=pl".format(categoryName)
+        URL = urlValue+"global/categories/{}?call=getIndexesInfo&fetchValues=false&lang=pl".format(categoryName)
         
         headers = {
                 "Cookie": dataObj.cookies,
@@ -123,7 +139,7 @@ def getCategoryIndexes(categoryName, dataObj):
                         indexID = item["id"]
                         dataObj.indexes[indexName] = indexID
         else:
-                print(parseJson(res.text))
+                log(parseJson(res.text))
 
         return dataObj
 
@@ -142,6 +158,17 @@ def convertFormat(json_data, dataObj):
         pendingCategoryIndexes = data["categoryIndexes"]
         documentClass = data["documentClass"]
         documentClass = documentClass.replace(" ", "%20")
+
+        dataObj.filePath = data["filePath"]
+        dataObj.fileName = os.path.basename(dataObj.filePath)
+        dataObj.fileExtension = os.path.splitext(data["filePath"])[1]
+
+        if dataObj.fileExtension == ".pdf":
+                dataObj.mimetype = "application/pdf"
+        if dataObj.fileExtension == "docx":
+                dataObj.mimetype = "application/msword"
+        if dataObj.fileExtension == "xlsx":
+                dataObj.mimetype = "application/vnd.ms-excel"
 
         dataObj.documentClass = documentClass
         dataObj.categoryName = categoryName
@@ -172,11 +199,11 @@ def convertFormat(json_data, dataObj):
 # Logging to contman
 # <----------------------------------------------->
 def login(dataObj):
-        URL = "http://cd3tstapp.raben-group.com/api/login"
+        URL = urlValue+"login"
         body = {
-                "domain":"System",
-                "login":"",
-                "password":""
+                "domain":domainValue,
+                "login":loginValue,
+                "password":passValue
         }
 
         headers = {
@@ -216,7 +243,7 @@ def login(dataObj):
 # Starting transaction
 # <----------------------------------------------->
 def startTransaction(dataObj):
-        URL = "http://cd3tstapp.raben-group.com/api/avatar?call=startTransaction"
+        URL = urlValue+"avatar?call=startTransaction"
 
         headers = {
                 "Cookie": dataObj.cookies,
@@ -254,7 +281,7 @@ def startTransaction(dataObj):
 def createDocument(dataObj):
         log("3. Create Document")
         documentClass = dataObj.documentClass
-        URL = "http://cd3tstapp.raben-group.com/api/global/classes/{}?call=create".format(documentClass)
+        URL = urlValue+"global/classes/{}?call=create".format(documentClass)
         headers = {
                 "Cookie": dataObj.cookies,
                 "Accept": "application/json",
@@ -290,8 +317,9 @@ def createDocument(dataObj):
 # <----------------------------------------------->
 def uploadFile(dataObj):
         log("4. Upload file")
-        URL = "http://cd3tstapp.raben-group.com/api/services/documents/{}/files".format(dataObj.documentID)
-        boundary = "testtest"
+        URL = urlValue+"services/documents/{}/files".format(dataObj.documentID)
+        # generate random string of characters for boundary
+        boundary = str(uuid.uuid4())
         headers = {
                 "Cookie": dataObj.cookies,
                 "Authorization": dataObj.token,
@@ -322,7 +350,6 @@ def uploadFile(dataObj):
         # <----------------------------------------------->
         body = "\r\n".join(input)
 
-
         try:
                 res = requests.post(URL, data=body, headers=headers)
                 code = int(res.status_code)
@@ -349,7 +376,7 @@ def uploadFile(dataObj):
 # <----------------------------------------------->
 def commitTransaction(dataObj):
         log("5. Commit Transaction")
-        URL = "http://cd3tstapp.raben-group.com/api/avatar?call=finishTransaction&commit=true"
+        URL = urlValue+"avatar?call=finishTransaction&commit=true"
         headers = {
                 "Cookie": dataObj.cookies,
                 "Accept": "application/json",
@@ -377,7 +404,7 @@ def commitTransaction(dataObj):
 # <----------------------------------------------->
 def logout(dataObj):
         log("6. Logout")
-        URL = "http://cd3tstapp.raben-group.com/api/avatar?call=logout"
+        URL = urlValue+"avatar?call=logout"
         headers = {
                 "Cookie": dataObj.cookies,
                 "Accept": "application/json",
