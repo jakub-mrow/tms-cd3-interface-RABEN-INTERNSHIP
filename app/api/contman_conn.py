@@ -337,7 +337,10 @@ def uploadFile(dataObj):
         # Testing if example works
         # passing pdf file from directory
         # <----------------------------------------------->
-        with open(os.path.join(sys.path[0], "api-cd3.pdf"), "rb") as file:
+        # with open(os.path.join(sys.path[0], "api-cd3.pdf"), "rb") as file:
+        #         dataFile = file.read()
+        #         file.close()
+        with open(dataObj.filePath, "rb") as file:
                 dataFile = file.read()
                 file.close()
 
@@ -346,8 +349,8 @@ def uploadFile(dataObj):
         # passing binary pdf data to send
         # <----------------------------------------------->
         input = ["--{}".format(boundary), 
-                "Content-Disposition: form-data; name=\"{}\"; filename=\"{}\"".format("plik20.pdf", "plik20.pdf"),
-                "Content-Type: application/pdf",
+                "Content-Disposition: form-data; name=\"{}\"; filename=\"{}\"".format(dataObj.fileName, dataObj.fileName),
+                "Content-Type: {}".format(dataObj.mimetype),
                 str(dataFile.decode("latin-1")),
                 "--{}--\r\n".format(boundary)]
 

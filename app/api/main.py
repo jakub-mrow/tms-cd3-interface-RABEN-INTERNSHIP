@@ -24,7 +24,7 @@ log.disabled = True
 # config for logs
 # <----------------------------------------------->
 logging.basicConfig(
-    filename="app/logs/"+str(date.today()),
+    filename="app/api_logs/"+str(date.today()),
     filemode="a",
     format="%(asctime)s | %(levelname)s | %(message)s",
     datefmt="%H:%M:%S",
@@ -97,7 +97,7 @@ def sendFile():
             return logoutError, 500
 
         requestTime = round(float(time.time() - start), 4)
-        goodRes = {"response": "File added succefully!", "time": requestTime}
+        goodRes = {"response": "File {} added succefully!".format(dataObj.fileName), "time": requestTime}
         logging.info("{} | {}".format(requestID, goodRes["response"]))
         return goodRes, 201
 

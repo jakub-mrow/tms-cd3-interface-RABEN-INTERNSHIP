@@ -1,4 +1,6 @@
 .env
 *.pyc
-app/logs/*
-!app/logs/.gitkeep
+app/api_logs/*
+!app/api_logs/.gitkeep
+app/monitor_logs/*
+!app/monitor_logs/.gitkeep

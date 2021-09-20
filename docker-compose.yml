@@ -1,17 +1,36 @@
 version: "3.7"
 services:
-  interface:
+  api:
     build:
-      context: ./
-      dockerfile: docker/interface.dockerfile
+      context: ./docker
+      dockerfile: api.dockerfile
     env_file:
       - .env
-    container_name: ${APP_CONTAINER_NAME}-${APP_ENV}
-    hostname: ${APP_CONTAINER_NAME}-${APP_ENV}
+    container_name: ${APP_CONTAINER_NAME}-${APP_ENV}-api
+    hostname: ${APP_CONTAINER_NAME}-${APP_ENV}-api
     ports:
       - "${APP_PORT}:5000"
     volumes:
-      - ./app:/app/
+      - ./app/api:/app/api
+      - ./app/api_logs:/app/api_logs
       - ${CHFAKT2_PATH}:/chfakt2/
     command: ["flask", "run"]
     restart: unless-stopped
+  monitor:
+    build:
+      context: ./docker
+      dockerfile: monitor.dockerfile
+    env_file:
+      - .env
+    container_name: ${APP_CONTAINER_NAME}-${APP_ENV}-monitor
+    hostname: ${APP_CONTAINER_NAME}-${APP_ENV}-monitor
+    volumes: 
+      - ./app/monitor:/app/monitor
+      - ./app/monitor_logs:/app/monitor_logs
+      - ${CHFAKT2_PATH}:/chfakt2/
+    command: ["python", "/app/monitor/src/monitor.py"]
+    #restart: unless-stopped
+    depends_on:
+      - "api"
+    links: 
+      - "api:api"

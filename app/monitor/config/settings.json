@@ -1,19 +1,28 @@
 {
     "array": [
         {
-            "path": "/chfakt2/",
+            "path": "/chfakt2/tms/RDE/prod/epod2/",
             "files": [
                 {
                     "regex": "*",
-                    "extension": "jpg"
+                    "extension": "jpg",
+                    "documentClass": "klasa",
+                    "categoryName": "nazwa"
                 },
                 {
                     "regex": "*",
                     "extension": "pdf"
                 }
             ],
-            "dest": "",
             "delete": true
+        },
+        {
+            "path": "/chfakt2/tms/RPL/",
+            "files": [
+                {
+
+                }
+            ]
         }
     ]
 }
