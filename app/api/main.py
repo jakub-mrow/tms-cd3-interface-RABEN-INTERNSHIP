@@ -1,8 +1,9 @@
 from flask import Flask
 from flask import jsonify, request
 from data import Data
-from datetime import date
 import contman_conn as cont
+#standard python packages below
+from datetime import date
 import time
 import uuid
 import logging
@@ -71,7 +72,7 @@ def sendFile():
 
         dataObj, check = cont.convertFormat(data, dataObj)
         if check == False:
-            formatError = {"request-error": "Invalid structure of the format. One of the indexes does not exist in this document class!"}
+            formatError = {"request-error": "Invalid format structure, check indexes and document class"}
             logging.error("{} | {} | {}".format(requestID, "format", formatError["request-error"]))
             return formatError, 400
         
@@ -103,6 +104,15 @@ def sendFile():
     jsonError = {"request-error": "Request must be JSON"}
     logging.error("{} | {}".format(requestID, jsonError["request-error"]))    
     return jsonError, 400
+
+@app.route("/file_send", methods = ["POST"])
+def send_file():
+    request_files = request.files
+    req = request.get_json()
+    print(request_files)
+    print(req)
+    print(request)
+
 
 if __name__ == "__main__":
     # <----------------------------------------------->

@@ -129,19 +129,26 @@ def getCategoryIndexes(categoryName, dataObj):
                 "Content-type": "application/json",
                 "Authorization": dataObj.token
         }
-        res = requests.get(URL, headers=headers)
-        code = int(res.status_code)
-        log("Status code: {}".format(code))
 
-        if code == 200:
-                for item in res.json():
-                        indexName = item["name"]
-                        indexID = item["id"]
-                        dataObj.indexes[indexName] = indexID
-        else:
-                log(parseJson(res.text))
+        try:
+                res = requests.get(URL, headers=headers)
+                code = int(res.status_code)
+                log("Status code: {}".format(code))
 
-        return dataObj
+                if code == 200:
+                        for item in res.json():
+                                indexName = item["name"]
+                                indexID = item["id"]
+                                dataObj.indexes[indexName] = indexID
+                        return dataObj, None
+                else:
+                        log(parseJson(res.text))
+                        return dataObj, {"request-error": [code, res.text]}
+
+        except requests.exceptions.RequestException as error:
+                return dataObj, {"request-error": error}
+
+
 
 # Helper functions (end)
 # <----------------------------------------------->
@@ -172,7 +179,9 @@ def convertFormat(json_data, dataObj):
 
         dataObj.documentClass = documentClass
         dataObj.categoryName = categoryName
-        dataObj = getCategoryIndexes(categoryName, dataObj)
+        dataObj, indexCheck = getCategoryIndexes(categoryName, dataObj)
+        if indexCheck is not None:
+                return dataObj, False
 
         # <----------------------------------------------->
         # Check if indexes are valid in this document class
@@ -190,9 +199,6 @@ def convertFormat(json_data, dataObj):
                 outputIndexes[indexID] = pendingCategoryIndexes[index]
         
         dataObj.outputFormat["categoryValues"][0].append(outputIndexes)
-
-        log("OUTPUT")
-        pprint.pprint(dataObj.outputFormat)
 
         return dataObj, True
 # <----------------------------------------------->
@@ -234,7 +240,7 @@ def login(dataObj):
                         return dataObj, None
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
@@ -270,7 +276,7 @@ def startTransaction(dataObj):
                         return dataObj, None
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
@@ -307,7 +313,7 @@ def createDocument(dataObj):
                         return dataObj, None
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
@@ -366,7 +372,7 @@ def uploadFile(dataObj):
                         return dataObj, None
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
 
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
@@ -393,7 +399,7 @@ def commitTransaction(dataObj):
                         log("Done!")
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
 
@@ -421,7 +427,7 @@ def logout(dataObj):
                         log("Done!")
                 else:
                         log(res.text)
-                        return {"request-error": [code, res.text]}
+                        return dataObj, {"request-error": [code, res.text]}
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
 
