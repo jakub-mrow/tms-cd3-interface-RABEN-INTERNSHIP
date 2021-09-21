@@ -41,10 +41,10 @@ def sendRequest(URL, filePath):
     "documentClass": "Dokumenty EDNTMP",
     "categoryName": "TMS Invoices",
     "categoryIndexes": {
-        "BU": "PL12",
+        "ABCD": "PL12",
         "ENV": "NONE",
         "Depot": "0000",
-        "Nr faktury": "TSTINVOICE-40-API-JAKUB",
+        "Nr faktury": "TSTINVOICE-43-API-JAKUB",
         "Nazwa pliku": os.path.basename(filePath),
         "Nr kontrahenta": "CUSTOMERID",
         "Typ dokumentu": "3",
@@ -54,10 +54,13 @@ def sendRequest(URL, filePath):
     "filePath": filePath
 }
 
+    auth=("test", "test2")
+
     try:
-        res = requests.post(URL, json=body)
+        res = requests.post(URL, json=body, auth=auth)
         code = int(res.status_code)
-        data = res.json()
+        data = res.text
+        print(data)
         return data, code
 
     except requests.exceptions.RequestException as error:

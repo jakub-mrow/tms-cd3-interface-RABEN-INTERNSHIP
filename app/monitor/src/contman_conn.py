@@ -13,12 +13,9 @@ global loginValue
 global domainValue
 
 # <----------------------------------------------->
-# DEBUG MODE
-# If you want to see prints, set variable debug to True,
-# if False nothing will be shown
-#
-# If there is an error in a response,
-# body of the reponse will always be printed
+# Library of functions to check the request with
+# Contman API, this file is a shortened version of
+# contman_conn.py used for api interface
 # <----------------------------------------------->
 debug = True
 def log(message):
@@ -132,8 +129,6 @@ def getCategoryIndexes(categoryName, dataObj):
         except requests.exceptions.RequestException as error:
                 return dataObj, {"request-error": error}
 
-
-
 # Helper functions (end)
 # <----------------------------------------------->
 
@@ -147,7 +142,7 @@ def login(dataObj):
                 "login":loginValue,
                 "password":passValue
         }
-
+        
         headers = {
                 "Accept": "application/json",
                 "Content-type": "application/json"

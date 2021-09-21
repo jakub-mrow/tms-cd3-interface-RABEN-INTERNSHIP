@@ -1,5 +1,7 @@
 from flask import Flask
 from flask import jsonify, request
+from flask_httpauth import HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 from data import Data
 import contman_conn as cont
 #standard python packages below
@@ -9,7 +11,17 @@ import uuid
 import logging
 import os
 
+global loginValue
+global passValue
+
+loginKey = "APILOGIN"
+loginValue = os.getenv(loginKey)
+passKey = "APIPASSWORD"
+passValue = os.getenv(passKey)
+
 app = Flask(__name__)
+auth = HTTPBasicAuth()
+
 
 # <----------------------------------------------->
 # Disable flask internal logging
@@ -32,11 +44,17 @@ logging.basicConfig(
     encoding='utf-8'
 )
 
+@auth.verify_password
+def verify_password(username, password):
+    if username == loginValue and password == passValue:
+        return username
+
 @app.route("/")
 def hello_world():
     return "Running"
 
 @app.route("/documents", methods = ["POST"])
+@auth.login_required
 def sendFile():
     requestID = str(uuid.uuid4())
     if request.is_json:
@@ -105,8 +123,12 @@ def sendFile():
     logging.error("{} | {}".format(requestID, jsonError["request-error"]))    
     return jsonError, 400
 
+
+# <----------------------------------------------->
+# testing file sending through multipart/form-data
+# <----------------------------------------------->
 @app.route("/file_send", methods = ["POST"])
-def send_file():
+def base64Send():
     request_files = request.files
     req = request.get_json()
     print(request_files)
@@ -126,4 +148,4 @@ if __name__ == "__main__":
     # <----------------------------------------------->
     # run the service
     # <----------------------------------------------->
-    app.run(debug=True)
+    app.run(debug=False)

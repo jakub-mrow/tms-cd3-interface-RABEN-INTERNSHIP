@@ -1,8 +1,8 @@
+from data import Data
+from datetime import date
 import os
 import requests
-from data import Data
 import logging
-from datetime import date
 import monitor_func as func
 import uuid
 
@@ -15,13 +15,9 @@ logging.basicConfig(
     encoding='utf-8'
 )
 
-path = "some/path/to/folder"
 URL = "http://api:5000/documents"
 
-
 if __name__ == "__main__":
-    # data from settings.json file
-    #dataSettings = func.loadSettings("monitor/config/settings.json") 
     directory = "/chfakt2"
     for file in os.listdir(directory):
         path = os.path.abspath(directory+"/"+file)
@@ -51,5 +47,3 @@ if __name__ == "__main__":
                 logging.error(f"{code} | {response}")
         
 """
-
-
