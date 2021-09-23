@@ -14,44 +14,44 @@ logging.basicConfig(
     encoding='utf-8'
 )
 
-def dataCheck(dataObj, logID):
+def dataCheck(dataObj, folderName):
     categoryName = dataObj.categoryName
 
     dataObj, loginError = cont.login(dataObj)
     if loginError is not None:
-        logging.error("{} | {} | {}".format(logID, "login", loginError["request-error"]))
+        logging.error("{} | {}".format("login", loginError["request-error"]))
+        return dataObj, False
+
+    dataObj, documentClassCheck = cont.getDocumentClassID(dataObj.documentClass, dataObj)
+    if documentClassCheck is not None:
+        logging.error("{} | {}".format("documentClass-check", documentClassCheck["request-error"]))
+        return dataObj, False
+
+    dataObj, categoryCheck = cont.getCategoryID(dataObj.categoryName, dataObj)
+    if categoryCheck is not None:
+        logging.error("{} | {}".format("category-check", categoryCheck["request-error"]))
         return dataObj, False
 
     dataObj, indexCheck = cont.getCategoryIndexes(categoryName, dataObj)
     if indexCheck is not None:
-        logging.error("{} | {} | {}".format(logID, "index-check", indexCheck["request-error"]))
+        logging.error("{} | {}".format("index-check", indexCheck["request-error"]))
         return dataObj, False
 
     dataObj, logoutError = cont.logout(dataObj)
     if logoutError is not None:
-        logging.error("{} | {} | {}".format(logID, "logout", logoutError["request-error"]))
+        logging.error("{} | {}".format("logout", logoutError["request-error"]))
         return dataObj, False
 
-    logging.info("{} | {} ".format(logID, "Data succefully checked!"))
+    logging.info("{} | {} ".format("Data succefully checked!", folderName))
     return dataObj, True
 
 
-def sendRequest(URL, filePath):
+def sendRequest(dataObj, URL):
     body = {
-    "documentClass": "Dokumenty EDNTMP",
-    "categoryName": "TMS Invoices",
-    "categoryIndexes": {
-        "ABCD": "PL12",
-        "ENV": "NONE",
-        "Depot": "0000",
-        "Nr faktury": "TSTINVOICE-43-API-JAKUB",
-        "Nazwa pliku": os.path.basename(filePath),
-        "Nr kontrahenta": "CUSTOMERID",
-        "Typ dokumentu": "3",
-        "Nazwa pliku": os.path.basename(filePath),
-        "TMS Invoices - nazwa pliku": os.path.basename(filePath) 
-    },
-    "filePath": filePath
+    "documentClass": dataObj.documentClass,
+    "categoryName": dataObj.categoryName,
+    "categoryIndexes": dataObj.indexesOut,
+    "filePath": dataObj.filePath
 }
 
     auth=("test", "test2")
@@ -66,7 +66,6 @@ def sendRequest(URL, filePath):
     except requests.exceptions.RequestException as error:
         return {"request-error": error}, 404
 
-def loadSettings(settings):
-    with open(settings) as set:
-        data = json.load(set)
+def getExtension(fileName):
+    return os.path.splitext(fileName)[1]
         

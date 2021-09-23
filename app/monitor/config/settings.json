@@ -1,28 +1,16 @@
 {
     "array": [
         {
-            "path": "/chfakt2/tms/RDE/prod/epod2/",
-            "files": [
+            "path": "/chfakt2/",
+            "files":
                 {
-                    "regex": "*",
-                    "extension": "jpg",
-                    "documentClass": "klasa",
-                    "categoryName": "nazwa"
+                    "extension": "pdf",
+                    "documentClass": "Dokumenty EDNTMP",
+                    "categoryName": "TMS Invoices",
+                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku","TMS Invoices - nazwa pliku"],
+                    "separator": "_"
                 },
-                {
-                    "regex": "*",
-                    "extension": "pdf"
-                }
-            ],
             "delete": true
-        },
-        {
-            "path": "/chfakt2/tms/RPL/",
-            "files": [
-                {
-
-                }
-            ]
         }
     ]
 }

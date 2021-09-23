@@ -337,9 +337,6 @@ def uploadFile(dataObj):
         # Testing if example works
         # passing pdf file from directory
         # <----------------------------------------------->
-        # with open(os.path.join(sys.path[0], "api-cd3.pdf"), "rb") as file:
-        #         dataFile = file.read()
-        #         file.close()
         with open(dataObj.filePath, "rb") as file:
                 dataFile = file.read()
                 file.close()

@@ -4,6 +4,7 @@ import os
 import requests
 import logging
 import monitor_func as func
+import json
 import uuid
 
 logging.basicConfig(
@@ -17,33 +18,51 @@ logging.basicConfig(
 
 URL = "http://api:5000/documents"
 
-if __name__ == "__main__":
-    directory = "/chfakt2"
-    for file in os.listdir(directory):
-        path = os.path.abspath(directory+"/"+file)
-        response, code = func.sendRequest(URL, path)
-        if code == 201:
-            logging.info(f"{code} | {response}")
-        else:
-            logging.error(f"{code} | {response}")
+def main():
+    with open("/app/monitor/config/settings.json") as set:
+        data = json.load(set)
+    folders = data["array"]
 
-"""
-    folders = []
+    logging.info("Starting the monitor")
+
     for folder in folders:
-        logID = str(uuid.uuid4())
         dataObj = Data()
-        "/chfakt2/tms/RDE/prod/epod2/"
 
-        dataObj, check = func.dataCheck(dataObj, logID)
+        dataObj.folderPath = folder["path"]
+        dataObj.categoryName = folder["files"]["categoryName"]
+        dataObj.documentClass = folder["files"]["documentClass"]
+        dataObj.indexesSetup = folder["files"]["indexes"]
+        dataObj.separator = folder["files"]["separator"]
+        dataObj.fileExtension = folder["files"]["extension"]
+
+        logging.info(f"Started adding files from folder: {dataObj.folderPath}")
+
+        dataObj, check = func.dataCheck(dataObj, dataObj.folderPath)
         if check == False:
             continue
-        logging.info("Data loaded successfully")
-        for filename in os.listdir(path):
-            filePath = ""
-            response, code = func.sendRequest(filePath, URL)
-            if code == 201:
-                logging.info(f"{code} | {response}")
-            else:
-                logging.error(f"{code} | {response}")
-        
-"""
+
+        for file in os.listdir(dataObj.folderPath):
+            if func.getExtension(file) == "."+dataObj.fileExtension:
+                dataObj.filePath = dataObj.folderPath+file
+                try:
+                    dataObj.indexesValues = file.split(dataObj.separator)
+                except ValueError as error:
+                    logging.info(f"Splitting the file name did not work | {error}")
+
+                dataObj.indexesOut = dict(zip(dataObj.indexesSetup, dataObj.indexesValues))
+
+                print(dataObj.indexesOut)
+
+                response, code = func.sendRequest(dataObj, URL)
+                if code == 201:
+                    logging.info(f"{code} | {response}")
+                else:
+                    logging.error(f"{code} | {response}")
+
+        logging.info(f"Added files with given format from folder {dataObj.folderPath}")
+
+# <----------------------------------------------->
+# Runnning main function 
+# <----------------------------------------------->
+if __name__ == "__main__":
+    main()

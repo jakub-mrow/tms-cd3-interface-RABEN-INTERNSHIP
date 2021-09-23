@@ -5,6 +5,7 @@
 class Data:
     def __init__(self):
         self.fileName = ""
+        self.folders = []
         self.fileExtension = ""
         self.mimetype = ""
         self.filePath = ""
@@ -12,6 +13,7 @@ class Data:
         self.token = ""
         self.indexes = {}
         self.categoryName = ""
+        self.categoryID = ""
         self.documentID = ""
         self.documentClass = ""
         self.outputFormat = {
@@ -21,6 +23,11 @@ class Data:
                 ]
             ]
         }
+        self.indexesSetup = []
+        self.separator = ""
+        self.indexesValues = []
+        self.indexesOut = None
+        self.folderPath = ""
 
     # pass cookies from headers
     def setCookies(self, rawCookie):

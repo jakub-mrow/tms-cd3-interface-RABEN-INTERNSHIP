@@ -17,11 +17,10 @@ global domainValue
 # Contman API, this file is a shortened version of
 # contman_conn.py used for api interface
 # <----------------------------------------------->
-debug = True
+debug = False
 def log(message):
         if debug == True:
                 print(message)
-
 
 urlKey = "CD3URL"
 urlValue = os.getenv(urlKey)
@@ -31,7 +30,6 @@ passKey = "CD3PASSWORD"
 passValue = os.getenv(passKey)
 domainKey = "CD3DOMAIN"
 domainValue = os.getenv(domainKey)
-
 
 # <----------------------------------------------->
 # Helper functions (start)
@@ -67,11 +65,11 @@ def getDocumentClassID(className, dataObj):
 
                 if code == 200:
                         categoryName = res.json()["id"]
-                        return categoryName
+                        return dataObj, None
                 else:
-                        return {"error": "This document class does not exist. Check the request body!"}
+                        return dataObj, {"error": "This document class does not exist. Check the request body!"}
         except requests.exceptions.RequestException as error:
-                return {"request-error": error}
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Sending a request to postman api to search for
@@ -87,13 +85,20 @@ def getCategoryID(categoryName, dataObj):
                 "Content-type": "application/json",
                 "Authorization": dataObj.token
         }
-        res = requests.get(URL, headers=headers)
-        code = int(res.status_code)
-        log("Status code: {}".format(code))
 
-        if code == 200:
-                categoryID = res.json()["id"]
-                return categoryID
+        try:
+                res = requests.get(URL, headers=headers)
+                code = int(res.status_code)
+                log("Status code: {}".format(code))
+
+                if code == 200:
+                        categoryID = res.json()["id"]
+                        dataObj.categoryID = categoryID
+                        return dataObj, None
+                else:
+                        return dataObj, {"request-error": [code, res.text]}
+        except requests.exceptions.RequestException as error:
+                return dataObj, {"request-error": error}
 
 # <----------------------------------------------->
 # Sending a request to postman api to get all

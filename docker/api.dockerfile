@@ -2,6 +2,7 @@ FROM python:3.9.7-slim-bullseye
 
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_APP=/app/api/main.py
+#ENV FLASK_DEBUG=1
 
 COPY ./requirements.txt /requirements.txt
 
