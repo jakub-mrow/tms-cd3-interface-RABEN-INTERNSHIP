@@ -126,6 +126,10 @@ def getCategoryIndexes(categoryName, dataObj):
                                 indexName = item["name"]
                                 indexID = item["id"]
                                 dataObj.indexes[indexName] = indexID
+
+                        for index in dataObj.indexesSetup:
+                                if index not in dataObj.indexes:
+                                        return dataObj, {"request-error": "Invalid format structure, check indexes and document class"}
                         return dataObj, None
                 else:
                         log(parseJson(res.text))

@@ -2,15 +2,28 @@
     "array": [
         {
             "path": "/chfakt2/",
-            "files":
+            "files": [
                 {
                     "extension": "pdf",
                     "documentClass": "Dokumenty EDNTMP",
                     "categoryName": "TMS Invoices",
-                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku","TMS Invoices - nazwa pliku"],
-                    "separator": "_"
+                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku"],
+                    "separator": "_",
+                    "wholeFileName": "TMS Invoices - nazwa pliku",
+                    "delete": true
                 },
-            "delete": true
+                {
+                    "extension": "jpg",
+                    "documentClass": "Dokumenty EDNTMP",
+                    "categoryName": "TMS Invoices",
+                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku"],
+                    "separator": "_",
+                    "wholeFileName": "TMS Invoices - nazwa pliku",
+                    "delete": true
+                }
+            ]
         }
     ]
 }
+
+

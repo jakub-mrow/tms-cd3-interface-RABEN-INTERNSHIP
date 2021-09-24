@@ -172,9 +172,9 @@ def convertFormat(json_data, dataObj):
 
         if dataObj.fileExtension == ".pdf":
                 dataObj.mimetype = "application/pdf"
-        if dataObj.fileExtension == "docx":
+        if dataObj.fileExtension == ".docx":
                 dataObj.mimetype = "application/msword"
-        if dataObj.fileExtension == "xlsx":
+        if dataObj.fileExtension == ".xlsx":
                 dataObj.mimetype = "application/vnd.ms-excel"
 
         dataObj.documentClass = documentClass

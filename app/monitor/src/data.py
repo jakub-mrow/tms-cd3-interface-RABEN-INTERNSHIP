@@ -28,6 +28,7 @@ class Data:
         self.indexesValues = []
         self.indexesOut = None
         self.folderPath = ""
+        self.wholeFileName = ""
 
     # pass cookies from headers
     def setCookies(self, rawCookie):
