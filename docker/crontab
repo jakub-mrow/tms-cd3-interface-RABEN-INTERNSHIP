@@ -1,1 +1,1 @@
-*/5 * * * * /app/monitor/src/monitor.py
+*/5 * * * * python /app/monitor/src/monitor.py
