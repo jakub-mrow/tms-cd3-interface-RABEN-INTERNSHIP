@@ -60,7 +60,7 @@ def sendRequest(dataObj, URL):
         res = requests.post(URL, json=body, auth=auth)
         code = int(res.status_code)
         data = res.text
-        print(data)
+        #print(data)
         return data, code
 
     except requests.exceptions.RequestException as error:

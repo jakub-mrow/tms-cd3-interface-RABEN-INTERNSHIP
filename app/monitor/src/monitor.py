@@ -39,10 +39,11 @@ def main():
             dataObj.separator = fileType["separator"]
             dataObj.fileExtension = fileType["extension"]
             dataObj.wholeFileNameCat = fileType["wholeFileName"]
+            dataObj.delete = fileType["delete"]
 
             dataObj.indexesSetup.append(dataObj.wholeFileNameCat)
 
-            logging.info(f"Started adding files from folder: {dataObj.folderPath}")
+            logging.info(f"Started adding files from folder: {dataObj.folderPath} with extension: {dataObj.fileExtension}")
 
             dataObj, check = func.dataCheck(dataObj, dataObj.folderPath)
             if check == False:
@@ -61,13 +62,13 @@ def main():
 
                     dataObj.indexesOut = dict(zip(dataObj.indexesSetup, dataObj.indexesValues))
 
-                    print(dataObj.indexesOut)
+                    #print(dataObj.indexesOut)
 
                     response, code = func.sendRequest(dataObj, URL)
                     if code == 201:
                         logging.info(f"{code} | {response}")
                         filesCount += 1
-                        if os.path.exists(dataObj.filePath):
+                        if os.path.exists(dataObj.filePath) and dataObj.delete == True:
                             os.remove(dataObj.filePath)
                             logging.info(f"remove |{file} removed from directory: {dataObj.folderPath}")
                     else:

@@ -90,7 +90,7 @@ def sendFile():
 
         dataObj, check = cont.convertFormat(data, dataObj)
 
-        logging.info(f"{requestID} | Sending file {dataObj.fileName} to Category: {dataObj.categoryName} Document Class: {dataObj.documentClass}")
+        logging.info(f"SENDING | {requestID} | Sending file {dataObj.fileName} to Category: {dataObj.categoryName} | Document Class: {dataObj.documentClass}")
 
         if check == False:
             formatError = {"request-error": "Invalid format structure, check indexes and document class"}
@@ -119,7 +119,7 @@ def sendFile():
 
         requestTime = round(float(time.time() - start), 4)
         goodRes = {"response": "File {} added succefully!".format(dataObj.fileName), "time": requestTime}
-        logging.info("201 | {} | {}".format(requestID, goodRes["response"]))
+        logging.info("201 - ADDED | {} | {}".format(requestID, goodRes["response"]))
         return goodRes, 201
 
     jsonError = {"request-error": "Request must be JSON"}

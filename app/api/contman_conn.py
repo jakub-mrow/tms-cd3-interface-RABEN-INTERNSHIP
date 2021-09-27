@@ -5,6 +5,7 @@ import pprint
 import os
 import sys
 import uuid
+import base64
 
 global debug
 global urlValue

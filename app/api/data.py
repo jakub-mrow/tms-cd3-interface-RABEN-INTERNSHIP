@@ -14,6 +14,7 @@ class Data:
         self.categoryName = ""
         self.documentID = ""
         self.documentClass = ""
+        self.base64 = ""
         self.outputFormat = {
             "categoryValues": [
                 [
