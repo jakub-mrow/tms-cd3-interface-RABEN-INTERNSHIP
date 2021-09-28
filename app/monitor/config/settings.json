@@ -1,22 +1,13 @@
 {
     "array": [
         {
-            "path": "/chfakt2/",
+            "path": "/chfakt2/kl2014/cd3/tslay2/de_test/out2/",
             "files": [
                 {
                     "extension": "pdf",
                     "documentClass": "Dokumenty EDNTMP",
                     "categoryName": "TMS Invoices",
-                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku"],
-                    "separator": "_",
-                    "wholeFileName": "TMS Invoices - nazwa pliku",
-                    "delete": false
-                },
-                {
-                    "extension": "jpg",
-                    "documentClass": "Dokumenty EDNTMP",
-                    "categoryName": "TMS Invoices",
-                    "indexes": ["BU","ENV","Depot","Nr faktury","Nazwa pliku","Nr kontrahenta","Typ dokumentu", "Nazwa pliku"],
+                    "indexes": ["BU", "ENV", "Depot", "Nr kontrahenta", "Nr faktury", "Typ dokumentu", "Nazwa pliku"],
                     "separator": "_",
                     "wholeFileName": "TMS Invoices - nazwa pliku",
                     "delete": false
