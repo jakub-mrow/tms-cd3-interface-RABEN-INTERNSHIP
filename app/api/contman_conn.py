@@ -167,9 +167,10 @@ def convertFormat(json_data, dataObj):
         documentClass = data["documentClass"]
         documentClass = documentClass.replace(" ", "%20")
 
-        dataObj.filePath = data["filePath"]
-        dataObj.fileName = os.path.basename(dataObj.filePath)
-        dataObj.fileExtension = os.path.splitext(data["filePath"])[1]
+        dataObj.fileName = data["fileName"]
+        dataObj.fileName = os.path.basename(dataObj.fileName)
+        dataObj.fileExtension = os.path.splitext(data["fileName"])[1]
+        dataObj.base64 = data["base64"]
 
         if dataObj.fileExtension == ".pdf":
                 dataObj.mimetype = "application/pdf"
@@ -338,9 +339,15 @@ def uploadFile(dataObj):
         # Testing if example works
         # passing pdf file from directory
         # <----------------------------------------------->
-        with open(dataObj.filePath, "rb") as file:
-                dataFile = file.read()
-                file.close()
+
+        dataFile = base64.b64decode(dataObj.base64)
+
+        # with open("/app/api/tmp/decoded"+dataObj.fileExtension, "wb") as decodedFile:
+        #         decodedFile.write(decodedData)
+
+        # with open("decoded"+dataObj.fileExtension, "rb") as file:
+        #         dataFile = file.read()
+        #         file.close()
 
         # <----------------------------------------------->
         # sending form data with boundary, name, filename

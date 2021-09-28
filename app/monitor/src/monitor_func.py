@@ -3,6 +3,7 @@ import contman_conn as cont
 import logging
 import json
 import os
+import base64
 from datetime import date
 
 logging.basicConfig(
@@ -47,11 +48,18 @@ def dataCheck(dataObj, folderName):
 
 
 def sendRequest(dataObj, URL):
+    print(dataObj.filePath)
+    with open(dataObj.filePath, "rb") as file:
+        dataFile = file.read()
+        fileBase64 = str(base64.b64encode(dataFile).decode("utf-8"))
+        file.close()
+
     body = {
     "documentClass": dataObj.documentClass,
     "categoryName": dataObj.categoryName,
     "categoryIndexes": dataObj.indexesOut,
-    "filePath": dataObj.filePath
+    "fileName": dataObj.fileName,
+    "base64": fileBase64
 }
 
     auth=("test", "test2")
@@ -60,7 +68,7 @@ def sendRequest(dataObj, URL):
         res = requests.post(URL, json=body, auth=auth)
         code = int(res.status_code)
         data = res.text
-        #print(data)
+        print(data)
         return data, code
 
     except requests.exceptions.RequestException as error:

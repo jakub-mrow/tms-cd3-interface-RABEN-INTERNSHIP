@@ -11,7 +11,7 @@ logging.basicConfig(
     filename="app/monitor_logs/"+str(date.today()),
     filemode="a",
     format="%(asctime)s | %(levelname)s | %(message)s",
-    datefmt="%H:%M:%S",
+    datefmt="%m/%d/%Y %I:%M:%S %p %Z",
     level=logging.INFO,
     encoding='utf-8'
 )
@@ -53,6 +53,7 @@ def main():
             for file in os.listdir(dataObj.folderPath):
                 if func.getExtension(file) == "."+dataObj.fileExtension:
                     dataObj.filePath = dataObj.folderPath+file
+                    dataObj.fileName = file
                     try:
                         dataObj.indexesValues = file.split(dataObj.separator)
                     except ValueError as error:
@@ -62,7 +63,7 @@ def main():
 
                     dataObj.indexesOut = dict(zip(dataObj.indexesSetup, dataObj.indexesValues))
 
-                    #print(dataObj.indexesOut)
+                    print(dataObj.indexesOut)
 
                     response, code = func.sendRequest(dataObj, URL)
                     if code == 201:
