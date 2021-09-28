@@ -10,7 +10,7 @@
                     "indexes": ["BU", "ENV", "Depot", "Nr kontrahenta", "Nr faktury", "Typ dokumentu", "Nazwa pliku"],
                     "separator": "_",
                     "wholeFileName": "TMS Invoices - nazwa pliku",
-                    "delete": false
+                    "delete": true
                 }
             ]
         },
@@ -24,7 +24,7 @@
                     "indexes": ["BU", "ENV", "Depot", "Nr kontrahenta", "Nr faktury", "Typ dokumentu", "Nazwa pliku"],
                     "separator": "_",
                     "wholeFileName": "TMS Invoices - nazwa pliku",
-                    "delete": false
+                    "delete": true
                 }
             ]
         }
