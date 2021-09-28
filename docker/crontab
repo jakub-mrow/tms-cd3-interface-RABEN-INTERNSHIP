@@ -1,0 +1,1 @@
+*/5 * * * * python /app/monitor/src/monitor.py

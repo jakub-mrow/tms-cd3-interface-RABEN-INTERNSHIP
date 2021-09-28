@@ -4,3 +4,5 @@ app/api_logs/*
 !app/api_logs/.gitkeep
 app/monitor_logs/*
 !app/monitor_logs/.gitkeep
+chfakt2/*
+!chfakt2/.gitkeep
