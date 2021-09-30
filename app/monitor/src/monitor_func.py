@@ -7,10 +7,10 @@ import base64
 from datetime import date
 
 logging.basicConfig(
-    filename="app/monitor_logs/"+str(date.today()),
+    filename="/app/monitor_logs/"+str(date.today()),
     filemode="a",
     format="%(asctime)s | %(levelname)s | %(message)s",
-    datefmt="%H:%M:%S",
+    datefmt="%m/%d/%Y %I:%M:%S %p %Z",
     level=logging.INFO,
     encoding='utf-8'
 )

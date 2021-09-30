@@ -28,7 +28,7 @@ services:
       - ./app/monitor:/app/monitor
       - ./app/monitor_logs:/app/monitor_logs
       - ${CHFAKT2_PATH}:/chfakt2/
-    command: ["cron", "-f"]
+    command: ["python", "/app/monitor/src/monitor.py"]
     restart: unless-stopped
     depends_on:
       - "api"
