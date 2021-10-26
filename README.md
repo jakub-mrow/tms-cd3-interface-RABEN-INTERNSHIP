@@ -10,12 +10,14 @@
 
 ![graph1](images/graph1.png)
 
-**2. Jak wygląda komunikacja** 
+**2. Jak wygląda komunikacja**
+
 Rozwiązaniem jest podział systemu na dwie części: 
 - Pierwsza z nich monitoruje pliki w poszczególnych katalogach i przy wykorzystaniu podanych ustawień w pliku konfiguracyjnym (settings.json) wysyłany jest plik w formacie base64 na endpoint web service’u. 
 - Drugą częścią systemu jest sam web service, na którym stworzone endpointy odbierają POST requesty od monitora lub innego użytkownika, po czym system komunikuje się z REST API Contman’a przesyłając pliki z potrzebnymi atrybutami. Możliwe jest również wysyłanie zapytań bezpośrednio do API.
 
 **3. Technologie**
+
 Dla przejrzystości oraz łatwości interakcji z kodem interfejs opiera się na dwóch stworzonych kontenerach korzystając z Docker i Docker Compose. Po jednym dla monitora oraz web service’u. Web service napisany w Pythonie wykorzystuje bibliotekę Flask, pomagającą w utworzeniu endpointów API do komunikacji pomiędzy aplikacjami.
 
 **4. Jak web service komunikuje się z API Contmana**
@@ -31,7 +33,9 @@ Wysyłanie pliku do systemu Contman podzielone jest na 7 części. Każda z nich
 - Tworzenie dokumentu:
     - Link requesta musi zawierać nazwę klasy dokumentu.
     - Body jest przekazywane w poniższym formacie i konwersja danych następuje poprzez skrypt.
+
     ![json1](images/json_1.png)
+
     - Request zwraca ID dokumentu, które będzie wykorzystywane do przesłania pliku do tego dokumentu.
 - Wysyłanie pliku do dokumentu:
     - Format multipart/form-data, zawierający binarną wersje pliku.
@@ -49,7 +53,8 @@ Foldery:
 - Prod: /docker-projects/prod/tms-cd3-interface
 Wszystkie nazwy folderów w dokumentacji znajdują się pod tymi ścieżkami w zależności od środowiska.
 
-**6. Wykorzystanie Web service’u** 
+**6. Wykorzystanie Web service’u**
+
 Stworzone REST API w Pythonie przy pomocy biblioteki Flask, zapakowane w kontener Docker, umożliwiające przesyłanie danych między monitorem lub innym źródłem, a ostatecznym umieszczeniem pliku w Contmanie.
 
 **Adres serwera web service’u**
@@ -124,11 +129,13 @@ W przypadku gdy nastąpi błąd po stronie systemu np. timeout ze strony Contman
     - potwierdzenie wysłania pliku i archiwizacji w systemie Contman oraz czas trwania  requestu – kod 201
 	
 **Logowanie błędów API**
+
 W folderze projektu wchodzimy w katolog app następnie api_logs. Każdy plik w tym katalogu nazwany jest datą i zawiera logi z całego dnia.
 
 ![](images/logs_api.png)
 
 Wartości oddzielone są znakami „|” oraz w kolejności informują o:
+
 1.	Godzina wystąpienia operacji
 2.	Typ wiadomości INFO lub ERROR
 3.	Jaka operacja jest wykonywana
@@ -138,9 +145,10 @@ Wartości oddzielone są znakami „|” oraz w kolejności informują o:
 
 
 **7. Monitor plików**
+
 Monitor przeszukuje pliki znajdujące się w katalogu wybranym przez użytkownika, parsując ich nazwę i wrzucając do api Contmana, z wszystkimi informacjami. Skrypt ten wysyła najpierw post requesta do web service’u i zwraca do pliku z logami informacje o kodzie odpowiedzi lub ewentualnych błędach. Monitor jest w pełni konfigurowalny i zależy od pliku settings.json. 
 
-####Jak wygląda settings.json, czyli konfiguracja ustawień monitora
+**Jak wygląda settings.json, czyli konfiguracja ustawień monitora**
 
 ~~~~
 {
@@ -208,6 +216,7 @@ W folderze projektu wchodzimy w katolog **app** następnie **monitor_logs**. Ka�
 ![](images/monitor_logs.png)
 
 Logowanie błędów wysyła komunikaty w następującej kolejności:
+
 1.	Startowanie monitora
 2.	Dodawanie plików z folderu o podanym rozszerzeniu
 3.	Sprawdzanie formatu pliku konfiguracyjnego
@@ -225,6 +234,7 @@ Oprócz tego konfigurowane jest tam hasło, login i system do Contmana wraz z lo
 Zmienna **REFRESH_MONITOR_TIME** odpowiedzialna jest za czas po jakim monitor ma się znowu uruchomić i zacząć dodawać pliki.
 
 **8. Code base**
+
 Kod źródłowy znajduje się na gitlabie pod nazwą tms-cd3-interface.
 
 **Folder /app - kod monitora oraz API**
