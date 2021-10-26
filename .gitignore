@@ -6,3 +6,5 @@ app/monitor_logs/*
 !app/monitor_logs/.gitkeep
 chfakt2/*
 !chfakt2/.gitkeep
+/images
+_pycache__/

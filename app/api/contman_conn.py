@@ -342,13 +342,6 @@ def uploadFile(dataObj):
 
         dataFile = base64.b64decode(dataObj.base64)
 
-        # with open("/app/api/tmp/decoded"+dataObj.fileExtension, "wb") as decodedFile:
-        #         decodedFile.write(decodedData)
-
-        # with open("decoded"+dataObj.fileExtension, "rb") as file:
-        #         dataFile = file.read()
-        #         file.close()
-
         # <----------------------------------------------->
         # sending form data with boundary, name, filename
         # passing binary pdf data to send
