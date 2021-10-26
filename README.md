@@ -41,6 +41,7 @@ Wysyłanie pliku do systemu Contman podzielone jest na 7 części. Każda z nich
     - Pusty post request na odpowiedni adres API, headers powtarzane.
 
 **5. Gdzie znajduje się projekt**
+
 Serwer: rabuclx03
 Foldery:
 - Test: /docker-projects/test/tms-cd3-interface
@@ -50,9 +51,12 @@ Wszystkie nazwy folderów w dokumentacji znajdują się pod tymi ścieżkami w z
 **6. Wykorzystanie Web service’u** 
 Stworzone REST API w Pythonie przy pomocy biblioteki Flask, zapakowane w kontener Docker, umożliwiające przesyłanie danych między monitorem lub innym źródłem, a ostatecznym umieszczeniem pliku w Contmanie.
 
-####Adres serwera web service’u
+**Adres serwera web service’u**
+
 ![server_address](images/server_address.png)
-#####Użytkowanie API - Obsługiwany format zapytania JSON: 
+
+**Użytkowanie API - Obsługiwany format zapytania JSON:**
+
 Potrzebne dane: 
 - klasa dokumentu,
 - nazwa kategorii, 
@@ -75,7 +79,7 @@ Poniższy przykład stworzony został na podstawie kategorii TMS Invoices.
 
 Kolejność wprowadzanych danych nie ma znaczenia.
 
-####Przykładowy request w Postmanie
+**Przykładowy request w Postmanie**
 
 Na wyżej wymieniony adres serwera z dodanym endpointem /documents wysyłamy zapytanie POST z formatem JSON podanym również w poprzednim punkcie. W zakładce body wybieramy raw, a następnie z rozwijanej listy JSON.
 
@@ -100,7 +104,7 @@ Na wyżej wymieniony adres serwera z dodanym endpointem /documents wysyłamy zap
     "base64": "file converted to base64"
 }
 ~~~~
-####Odpowiedzi REST API
+**Odpowiedzi REST API**
 
 ![](images/response_rest_api.jpg)
 
@@ -118,7 +122,7 @@ W przypadku gdy nastąpi błąd po stronie systemu np. timeout ze strony Contman
 
     - potwierdzenie wysłania pliku i archiwizacji w systemie Contman oraz czas trwania  requestu – kod 201
 	
-####Logowanie błędów API
+**Logowanie błędów API**
 W folderze projektu wchodzimy w katolog app następnie api_logs. Każdy plik w tym katalogu nazwany jest datą i zawiera logi z całego dnia.
 
 ![](images/logs_api.png)
@@ -196,7 +200,8 @@ Ostatnim parametrem jest klucz **”delete”**, który ustawiony na **True** b�
 
 **UWAGA!** Wszystkie informacje dotyczące klasy dokumentu, kategorii oraz nazw indeksów są **case sensitive**, czyli wielkie i małe litery, spacje muszą być idealnie wprowadzone. W innym wypadku w pliku z logami dostaniemy informacje, że format ustawień jest zły i należy go poprawić.
 
-####Logowanie błędów monitora
+**Logowanie błędów monitora**
+
 W folderze projektu wchodzimy w katolog **app** następnie **monitor_logs**. Każdy plik w tym katalogu nazwany jest datą i zawiera logi z całego dnia.
 
 ![](images/monitor_logs.png)
@@ -209,7 +214,8 @@ Logowanie błędów wysyła komunikaty w następującej kolejności:
 5.	Potwierdzenie ile plików dodano i jeżeli klucz ”delete” był ustawiony na True, to zapisana zostanie informacja o powodzeniu usunięcia plików
 6.	Rozpoczęcie przetwarzania plików z innym rozszerzeniem, jeżeli takie się zdefiniowało
 
-####Konfiguracja środowiska
+**Konfiguracja środowiska**
+
 W pliku .env, gdzie zdefiniowane są zmienne środowiskowe dla kontenerów, znajduje się URL do Contmana, od którego zależy czy operujemy na środowisku testowym czy produkcyjnym.
 
 ![](images/env_configuration.png)
@@ -219,26 +225,30 @@ Zmienna **REFRESH_MONITOR_TIME** odpowiedzialna jest za czas po jakim monitor ma
 
 **8. Code base**
 Kod źródłowy znajduje się na gitlabie pod nazwą tms-cd3-interface.
-####Folder /app - kod monitora oraz API
+
+**Folder /app - kod monitora oraz API**
 
 ![](images/cb1.png)
 
-####Folder /app/api
+**Folder /app/api**
+
 W pliku main ustawione jest api w Flasku z endpointami i użyciem funkcji z contman_conn.py
  
 ![](images/cb2.png)
 
-####Folder /app/monitor
+**Folder /app/monitor**
+
 Zawiera foldery src oraz config, odpowiednio z kodem źródłowym i plikiem konfiguracyjnym.
  
 ![](images/cb3.png)
 
-####Folder /app/monitor/src
+**Folder /app/monitor/src**
+
 Główny kod monitora znajduje się w monitor.py i używa funkcji z monitor_func.py
  
 ![](images/cb4.png)
 
-####Folder /docker - pliki dockerowe do aplikacji
+**Folder /docker - pliki dockerowe do aplikacji**
 
 ![](images/cb5.png)
 
