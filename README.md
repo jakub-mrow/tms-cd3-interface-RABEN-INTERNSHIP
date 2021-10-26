@@ -1,4 +1,5 @@
-#### This software was written during my internship at Raben and belongs to Raben Logistics Polska sp. z o.o.
+#### This software was written during my internship at Raben and belongs to Raben Logistics Polska sp. z o.o. 
+#### In this README.md there is a documentation written in Polish that I made while working on this software. It includes everything that people need to know when they want to get to know the software, configure or change it.
 
 **1. Interfejs TMS <> CD3 zakres**
 - Narzędzie do przesyłania plików do systemu Contman. 
