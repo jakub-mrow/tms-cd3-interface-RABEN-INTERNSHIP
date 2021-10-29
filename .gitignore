@@ -1,4 +1,5 @@
 .env
+.DS_Store
 *.pyc
 app/api_logs/*
 !app/api_logs/.gitkeep
